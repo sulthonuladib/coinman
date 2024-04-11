@@ -1,0 +1,25 @@
+{{block "coins" .}}
+    <div id="coins" class="flex">
+        <div class="flex-row gap-2">
+            <div>select</div>
+            <div>Id</div>
+            <div>Name</div>
+            <div>Symbol</div>
+        </div>
+        {{range .Coins}}
+            <div class="coin-item flex-row gap-2">
+                <div>
+                    <input type="checkbox" name="coin-selected" value="{{.Id}}" />
+                </div>
+                <div>{{.Id}}</div>
+                <div>{{.Name}}</div>
+                <div>{{.Symbol}}</div>
+                <a href="/coins/{{.Id}}">Edit</a>
+                <button
+                    hx-swap="outerHTML swap:1s"
+                    hx-target="closest .coin-item"
+                    hx-delete="/coins/{{.Id}}">Delete</button>
+            </div>
+        {{end}}
+    </div>
+{{end}}

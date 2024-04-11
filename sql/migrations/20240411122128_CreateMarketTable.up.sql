@@ -1,0 +1,9 @@
+CREATE TABLE markets (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(36) NOT NULL,
+    description VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS "idx_markets_id" ON markets ("id");
