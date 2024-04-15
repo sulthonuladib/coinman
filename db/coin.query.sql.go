@@ -68,18 +68,59 @@ func (q *Queries) GetCoin(ctx context.Context, id int32) (Coin, error) {
 }
 
 const getCoins = `-- name: GetCoins :many
-SELECT id, symbol, name, created_at, updated_at FROM coins
-    LIMIT $2
-    OFFSET $1
+SELECT
+  id, symbol, name, created_at, updated_at
+  FROM coins
+  WHERE
+  symbol ILIKE '%' || $1 || '%' OR name ILIKE '%' || $1 || '%'
+  LIMIT $3
+  OFFSET $2
 `
 
 type GetCoinsParams struct {
+	Symbol pgtype.Text `json:"symbol"`
 	Offset pgtype.Int4 `json:"offset"`
 	Limit  pgtype.Int4 `json:"limit"`
 }
 
 func (q *Queries) GetCoins(ctx context.Context, arg GetCoinsParams) ([]Coin, error) {
-	rows, err := q.db.Query(ctx, getCoins, arg.Offset, arg.Limit)
+	rows, err := q.db.Query(ctx, getCoins, arg.Symbol, arg.Offset, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Coin
+	for rows.Next() {
+		var i Coin
+		if err := rows.Scan(
+			&i.ID,
+			&i.Symbol,
+			&i.Name,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const searchCoins = `-- name: SearchCoins :many
+SELECT id, symbol, name, created_at, updated_at FROM coins WHERE symbol ILIKE '%' || $1 || '%' OR name ILIKE '%' || $1 || '%' LIMIT $3 OFFSET $2
+`
+
+type SearchCoinsParams struct {
+	Symbol pgtype.Text `json:"symbol"`
+	Offset pgtype.Int4 `json:"offset"`
+	Limit  pgtype.Int4 `json:"limit"`
+}
+
+func (q *Queries) SearchCoins(ctx context.Context, arg SearchCoinsParams) ([]Coin, error) {
+	rows, err := q.db.Query(ctx, searchCoins, arg.Symbol, arg.Offset, arg.Limit)
 	if err != nil {
 		return nil, err
 	}

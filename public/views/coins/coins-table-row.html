@@ -1,0 +1,15 @@
+{{ block "coins-table-row" .}}
+{{range .Data}}
+<tr>
+  <td>{{.ID}}</td>
+  <td>{{.Symbol}}</td>
+  <td>{{.Name}}</td>
+  <td>
+    <button>View</button>
+    <button type="">
+      <a href="/coins/{{.ID}}/edit">Button</a>
+    </button>
+  </td>
+</tr>
+{{end}}
+{{end}}

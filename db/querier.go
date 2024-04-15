@@ -10,10 +10,21 @@ import (
 
 type Querier interface {
 	CreateCoin(ctx context.Context, arg CreateCoinParams) (Coin, error)
+	CreateMarket(ctx context.Context, arg CreateMarketParams) (Market, error)
+	CreateNetwork(ctx context.Context, arg CreateNetworkParams) (Network, error)
 	DeleteCoin(ctx context.Context, id int32) (Coin, error)
+	DeleteMarket(ctx context.Context, id int32) (Market, error)
+	DeleteNetwork(ctx context.Context, id int32) (Network, error)
 	GetCoin(ctx context.Context, id int32) (Coin, error)
 	GetCoins(ctx context.Context, arg GetCoinsParams) ([]Coin, error)
+	GetMarket(ctx context.Context, id int32) (Market, error)
+	GetMarkets(ctx context.Context, arg GetMarketsParams) ([]Market, error)
+	GetNetwork(ctx context.Context, id int32) (Network, error)
+	GetNetworks(ctx context.Context, arg GetNetworksParams) ([]Network, error)
+	SearchCoins(ctx context.Context, arg SearchCoinsParams) ([]Coin, error)
 	UpdateCoin(ctx context.Context, arg UpdateCoinParams) (Coin, error)
+	UpdateMarket(ctx context.Context, arg UpdateMarketParams) (Market, error)
+	UpdateNetwork(ctx context.Context, arg UpdateNetworkParams) (Network, error)
 }
 
 var _ Querier = (*Queries)(nil)

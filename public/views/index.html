@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+  {{ template "header" . }}
+  <body>
+    <div>
+      {{ template "coins-table" . }}
+    </div>
+    <div
+      hidden
+      hx-get="/components/coins" hx-trigger="load"
+      hx-target="#coins-table-row"
+      hx-swap="innerHTML"
+    ></div>
+  </body>
+
+</html>

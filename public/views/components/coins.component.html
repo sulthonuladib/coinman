@@ -1,0 +1,34 @@
+{{ block "coins-table" .}}
+<table>
+
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Symbol</th>
+      <th>Name</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+
+  <tbody id="coins-table-row">
+    {{ template "coins-table-row" .Data }}
+  </tbody>
+
+</table>
+{{ end }}
+
+{{ block "coins-table-row" .}}
+{{ range .Data }}
+<tr>
+  <td>{{.ID}}</td>
+  <td>{{.Symbol}}</td>
+  <td>{{.Name}}</td>
+  <td>
+    <button>View</button>
+    <button type="">
+      <a href="/coins/{{.ID}}/edit">Button</a>
+    </button>
+  </td>
+</tr>
+{{ end }}
+{{ end }}

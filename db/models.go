@@ -8,22 +8,32 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-type Assignment struct {
-	ID        int32            `json:"id"`
-	MarketID  int32            `json:"marketId"`
-	CoinID    int32            `json:"coinId"`
-	NetworkID int32            `json:"networkId"`
-	Active    pgtype.Bool      `json:"active"`
-	CreatedAt pgtype.Timestamp `json:"createdAt"`
-	UpdatedAt pgtype.Timestamp `json:"updatedAt"`
-}
-
 type Coin struct {
 	ID        int32            `json:"id"`
 	Symbol    string           `json:"symbol"`
 	Name      string           `json:"name"`
 	CreatedAt pgtype.Timestamp `json:"createdAt"`
 	UpdatedAt pgtype.Timestamp `json:"updatedAt"`
+}
+
+type CoinMarketAssignment struct {
+	ID            int32            `json:"id"`
+	CoinID        int32            `json:"coinId"`
+	MarketID      int32            `json:"marketId"`
+	Active        pgtype.Bool      `json:"active"`
+	AlternateName string           `json:"alternateName"`
+	CreatedAt     pgtype.Timestamp `json:"createdAt"`
+	UpdatedAt     pgtype.Timestamp `json:"updatedAt"`
+}
+
+type CoinMarketNetworkAssignment struct {
+	ID                     int32            `json:"id"`
+	CoinMarketAssignmentID int32            `json:"coinMarketAssignmentId"`
+	NetworkID              int32            `json:"networkId"`
+	Active                 pgtype.Bool      `json:"active"`
+	Description            pgtype.Text      `json:"description"`
+	CreatedAt              pgtype.Timestamp `json:"createdAt"`
+	UpdatedAt              pgtype.Timestamp `json:"updatedAt"`
 }
 
 type Market struct {

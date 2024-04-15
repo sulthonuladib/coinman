@@ -6,11 +6,15 @@ import (
 	"log"
 
 	"github.com/e9cryptteam/coinman/db"
-	"github.com/e9cryptteam/coinman/pkg/handlers"
+	"github.com/e9cryptteam/coinman/pkg/api"
 	"github.com/e9cryptteam/coinman/pkg/utils"
+	"github.com/e9cryptteam/coinman/pkg/web"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
+
+const ViewDir = "public/views"
 
 func main() {
 	ctx := context.Background()
@@ -20,23 +24,41 @@ func main() {
 		panic(err)
 	}
 
-	templates, err := template.ParseFiles(
+	/*templates, err := template.ParseFiles(
 		"public/views/header.html",
+		"public/views/nav.html",
 		"public/views/coins/index.html",
 		"public/views/coins/coins.html",
+		"public/views/markets/market-table.html",
+		"public/views/markets/markets.html",
 	)
+	if err != nil {
+		log.Fatal(err)
+	}*/
+	templates, err := template.ParseGlob("public/views/*.html")
+  templates.ParseGlob("public/views/coins/*.html")
+  templates.ParseGlob("public/views/markets/*.html")
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	for _, t := range templates.Templates() {
+		log.Println(t.Name())
+	}
+
+	conn := db.New(d)
+
 	e := echo.New()
-	q := db.New(d)
-	coinHandlers := handlers.NewCoinHandler(*q, ctx)
-
 	e.Renderer = utils.NewTemplateRenderer(templates)
-	e.Static("/css", "public/css")
+	e.Debug = true
 
-	e.GET("/", coinHandlers.Index)
+	e.Use(middleware.Logger())
+
+	e.Static("/css", "public/css")
+	e.Static("/js", "public/js")
+
+	api.InitRoutes(e, *conn, ctx)
+	web.InitRoutes(e, *conn, ctx)
 
 	e.Logger.Fatal(e.Start(":8080"))
 }
